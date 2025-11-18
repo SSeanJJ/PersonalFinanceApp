@@ -1,47 +1,48 @@
-// to learn how to download a file, get/use file metadata, delete files, and list files see https://firebase.google.com/docs/storage/web/start
-import { useRef, useState } from 'react'
+// to learn how to download a file, get/use file metadata, delete files, 
+// and list files see https://firebase.google.com/docs/storage/web/start
+
+import { useRef, useState } from "react";
+
+// ✅ USE the initialized storage instance from your firebaseConfig.js
+import { storage } from "../../lib/firebase/firebaseConfig";
+
 import {
-    getStorage,
     ref,
-    uploadBytesResumable,
+    uploadBytesResumable
 } from "firebase/storage";
 
-const storage = getStorage()
-
 const UploadFile = () => {
-    const inputEl = useRef(null)
-    let [value, setValue] = useState(0)
+    const inputEl = useRef(null);
+    let [value, setValue] = useState(0);
 
     function uploadFile() {
-        // get file
-        var file = inputEl.current.files[0]
+        const file = inputEl.current.files[0];
+        if (!file) return;
 
-        // create a storage ref
-        const storageRef = ref(storage, "user_uploads" + file.name)
+        // Create storage reference
+        const storageRef = ref(storage, "user_uploads/" + file.name);
 
-        // upload file
-        const task = uploadBytesResumable(storageRef, file)
+        // Upload file
+        const task = uploadBytesResumable(storageRef, file);
 
-        // update progress bar
-        task.on('state_change',
-
+        // Track progress
+        task.on(
+            "state_changed",
             function progress(snapshot) {
-                setValue((snapshot.bytesTransferred / snapshot.totalBytes) * 100)
+                setValue((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
             },
-
             function error(err) {
-                alert(error)
+                alert(err);
             },
-
             function complete() {
-                alert('Uploaded to firebase storage successfully!')
+                alert("Uploaded to Firebase Storage successfully!");
             }
-        )
+        );
     }
 
     return (
-        <div style={{ margin: '5px 0' }}>
-            <progress value={value} max="100" style={{ width: '100%' }}></progress>
+        <div style={{ margin: "5px 0" }}>
+            <progress value={value} max="100" style={{ width: "100%" }}></progress>
             <br />
             <input
                 type="file"
@@ -49,7 +50,7 @@ const UploadFile = () => {
                 ref={inputEl}
             />
         </div>
-    )
-}
+    );
+};
 
-export default UploadFile
+export default UploadFile;

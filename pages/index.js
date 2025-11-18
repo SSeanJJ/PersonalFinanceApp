@@ -1,105 +1,58 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
-import WriteToCloudFirestore from '@/components/cloudFirestore/Write'
-import ReadDataFromCloudFirestore from '@/components/cloudFirestore/Read'
 import { useUser } from '@/lib/firebase/useUser'
-import Counter from '@/components/realtimeDatabase/Counter'
-import UploadFile from '@/components/storage/UploadFile'
-import Card from 'react-bootstrap/Card'
-import Button from 'react-bootstrap/Button'
 
 export default function Home() {
   const { user, logout } = useUser()
 
+  // --------------------------
+  // If user is logged in
+  // --------------------------
   if (user) {
     return (
-      <div className={styles.container}>
-        <Card>
-          <Card.Body>
-            <Card.Title>{user.name}</Card.Title>
-            <Card.Text>{user.email}</Card.Text>
-            <hr />
-            {user.profilePic ? <image src={user.profilePic} height={100} width={100}></image> : <p>No profile pic</p>}
-            <hr />
-            <WriteToCloudFirestore />
-            <ReadDataFromCloudFirestore />
-            <hr />
-            <Counter id={user.id} />
-            <hr />
-            <UploadFile />
-            <hr />
-            <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-              <Button onClick={() => logout()} style={{ width: '100px' }}>Log Out</Button>
-              <a href="https://github.com/bjcarlson42/nextjs-with-firebase" target="_blank">
-                <Button variant="outline-secondary" style={{ width: '100px' }}>Code</Button>
-              </a>
-            </div>
-          </Card.Body>
-        </Card>
+      <div style={{ padding: "20px", maxWidth: "600px", margin: "0 auto" }}>
+        <h1>Welcome, {user.name}</h1>
+        <p>{user.email}</p>
+
+        <hr />
+
+        <h2>Menu</h2>
+        <ul style={{ listStyle: "none", padding: 0, fontSize: "18px", lineHeight: "2rem" }}>
+          <li><a href="/dashboard">📊 Dashboard</a></li>
+          <li><a href="/income">💰 Income</a></li>
+          <li><a href="/expenses">💸 Expenses</a></li>
+          <li><a href="/budgets">📆 Budgets</a></li>
+          <li><a href="/goals">🎯 Goals</a></li>
+          <li><a href="/bills">🧾 Bills & Reminders</a></li>
+          <li><a href="/reports">📈 Reports</a></li>
+          <li><a href="/settings">⚙️ Settings</a></li>
+        </ul>
+
+        <hr />
+
+        <button
+          onClick={logout}
+          style={{
+            background: "red",
+            color: "white",
+            padding: "10px 20px",
+            borderRadius: "8px",
+            border: "none",
+            cursor: "pointer"
+          }}
+        >
+          Log Out
+        </button>
       </div>
     )
   }
 
-  else return (
-    <div className={styles.container}>
-      <p><a href="/auth">Log In!</a></p>
-
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
+  // --------------------------
+  // If user is NOT logged in
+  // --------------------------
+  return (
+    <div style={{ padding: "20px", textAlign: "center" }}>
+      <h1>Welcome to the Personal Finance App</h1>
+      <p>Please log in to continue.</p>
+      <a href="/auth" style={{ fontSize: "20px", color: "blue" }}>Log In</a>
     </div>
   )
 }
