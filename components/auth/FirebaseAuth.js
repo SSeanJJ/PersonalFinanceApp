@@ -4,8 +4,6 @@ import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth'
 import {
     getAuth,
     GoogleAuthProvider,
-    TwitterAuthProvider,
-    GithubAuthProvider,
     EmailAuthProvider
 } from "firebase/auth";
 
@@ -25,8 +23,6 @@ const firebaseAuthConfig = {
             requireDisplayName: true,
         },
         GoogleAuthProvider.PROVIDER_ID,
-        TwitterAuthProvider.PROVIDER_ID,
-        GithubAuthProvider.PROVIDER_ID,
     ],
     signInSuccessUrl: '/',
     credentialHelper: 'none',

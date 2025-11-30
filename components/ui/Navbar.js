@@ -12,7 +12,7 @@ export default function Navbar() {
     }}>
       <Link href="/dashboard">Dashboard</Link>
       <Link href="/transactions">Transactions</Link>
-      <Link href="/budget">Budget</Link>
+      <Link href="/budgets">Budget</Link>
       <Link href="/bills">Bills</Link>
       <Link href="/goals">Goals</Link>
       <Link href="/reports">Reports</Link>
