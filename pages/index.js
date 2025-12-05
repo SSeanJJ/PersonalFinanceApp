@@ -39,7 +39,7 @@ export default function Home() {
   if (user) {
     return (
       <main style={cardStyle}>
-        <h1 style={{ marginBottom: "5px" }}>Welcome, {user.name}</h1>
+        <h1 style={{ marginBottom: "5px" }}>Welcome, User</h1>
         <p style={{ color: "#555", marginTop: "0" }}>{user.email}</p>
 
         <hr style={{ margin: "20px 0" }} />
