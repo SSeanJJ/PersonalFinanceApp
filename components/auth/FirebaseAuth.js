@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+/* import { useEffect, useState } from 'react'
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth'
 
 import {
@@ -55,4 +55,4 @@ const FirebaseAuth = () => {
     );
 };
 
-export default FirebaseAuth;
+export default FirebaseAuth; */
