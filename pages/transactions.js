@@ -7,7 +7,7 @@ import {
   getFirestore,
   onSnapshot,
   query,
-  orderBy
+  orderBy,
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { initFirebase } from "@/lib/firebase/initFirebase";
@@ -18,7 +18,7 @@ const db = getFirestore();
 
 export default function Transactions() {
   const auth = getAuth();
-  const { user } = useUser(); 
+  const { user } = useUser();
 
   // -------------------- FORM STATE --------------------
   const [type, setType] = useState("expense");
@@ -29,7 +29,15 @@ export default function Transactions() {
   const [frequency, setFrequency] = useState("one-time");
   const [message, setMessage] = useState("");
 
-  const expenseCategories = ["Food", "Transportation", "Entertainment", "Rent", "Utilities", "Other"];
+  const expenseCategories = [
+    "Food",
+    "Transportation",
+    "Entertainment",
+    "Rent",
+    "Utilities",
+    "Other",
+  ];
+
   const incomeCategories = ["Salary", "Freelance", "Investments", "Other"];
 
   const [transactions, setTransactions] = useState([]);
@@ -80,7 +88,7 @@ export default function Transactions() {
       setDate("");
       setNote("");
       setFrequency("one-time");
-    } catch (error) {
+    } catch {
       setMessage("Failed to add transaction.");
     }
   };
@@ -91,7 +99,7 @@ export default function Transactions() {
     if (!current) return;
     try {
       await deleteDoc(doc(db, "users", current.uid, "transactions", id));
-    } catch (err) {
+    } catch {
       alert("Failed to delete.");
     }
   };
@@ -112,7 +120,7 @@ export default function Transactions() {
     return true;
   });
 
-  // -------------------- UI --------------------
+  // -------------------- STYLING --------------------
   const cardStyle = {
     background: "white",
     padding: "1.5rem",
@@ -130,7 +138,11 @@ export default function Transactions() {
     fontSize: "1rem",
   };
 
-  const labelStyle = { fontWeight: "bold", display: "block", marginBottom: "0.3rem" };
+  const labelStyle = {
+    fontWeight: "bold",
+    display: "block",
+    marginBottom: "0.3rem",
+  };
 
   const buttonStyle = {
     background: "#4A90E2",
@@ -143,8 +155,21 @@ export default function Transactions() {
     marginTop: "1rem",
   };
 
+  const thStyle = {
+    padding: "0.75rem",
+    textAlign: "left",
+    fontWeight: "bold",
+    color: "#333",
+  };
+
+  const tdStyle = {
+    padding: "0.75rem",
+    color: "#444",
+  };
+
+  // -------------------- RENDER --------------------
   return (
-    <main style={{ padding: "2rem", fontFamily: "Arial, sans-serif" }}>
+    <main style={{ padding: "2rem", fontFamily: "Arial" }}>
       <h1 style={{ marginBottom: "1rem" }}>Transactions</h1>
 
       {message && <p><strong>{message}</strong></p>}
@@ -160,8 +185,9 @@ export default function Transactions() {
             style={inputStyle}
             value={type}
             onChange={(e) => {
-              setType(e.target.value);
-              setCategory("");
+              const newType = e.target.value;
+              setType(newType);
+              setCategory(newType === "expense" ? "Food" : "Salary"); // FIXED
             }}
           >
             <option value="expense">Expense</option>
@@ -172,7 +198,11 @@ export default function Transactions() {
 
           {/* CATEGORY */}
           <label style={labelStyle}>Category:</label>
-          <select style={inputStyle} value={category} onChange={(e) => setCategory(e.target.value)}>
+          <select
+            style={inputStyle}
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
             {(type === "expense" ? expenseCategories : incomeCategories).map((c) => (
               <option key={c} value={c}>{c}</option>
             ))}
@@ -180,7 +210,7 @@ export default function Transactions() {
 
           <br /><br />
 
-          {/* INCOME FREQUENCY */}
+          {/* FREQUENCY (Income Only) */}
           {type === "income" && (
             <>
               <label style={labelStyle}>Income Frequency:</label>
@@ -242,10 +272,14 @@ export default function Transactions() {
         <h2>Filters</h2>
 
         <label style={labelStyle}>Type:</label>
-        <select style={inputStyle} value={filterType} onChange={(e) => {
-          setFilterType(e.target.value);
-          setFilterCategory("all");
-        }}>
+        <select
+          style={inputStyle}
+          value={filterType}
+          onChange={(e) => {
+            setFilterType(e.target.value);
+            setFilterCategory("all");
+          }}
+        >
           <option value="all">All</option>
           <option value="expense">Expense</option>
           <option value="income">Income</option>
@@ -316,15 +350,9 @@ export default function Transactions() {
       <div style={cardStyle}>
         <h2>Filtered Transactions</h2>
 
-        <table
-          style={{
-            width: "100%",
-            borderCollapse: "collapse",
-            background: "white",
-          }}
-        >
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
-            <tr style={{ background: "#f4f4f4", borderBottom: "2px solid #ddd" }}>
+            <tr style={{ background: "#f4f4f4" }}>
               <th style={thStyle}>Date</th>
               <th style={thStyle}>Type</th>
               <th style={thStyle}>Category</th>
@@ -364,19 +392,6 @@ export default function Transactions() {
           </tbody>
         </table>
       </div>
-
     </main>
   );
 }
-
-const thStyle = {
-  padding: "0.75rem",
-  textAlign: "left",
-  fontWeight: "bold",
-  color: "#333",
-};
-
-const tdStyle = {
-  padding: "0.75rem",
-  color: "#444",
-};
